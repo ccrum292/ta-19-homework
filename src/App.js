@@ -1,25 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import Layout from "./components/Layout";
+import Nav from "./components/Nav";
+import CardOne from "./components/CardOne";
+import SearchBar from "./components/SearchBar";
+import EmployeeTable from "./components/EmployeeTable";
+
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 function App() {
+  const [search, setSearch] = useState("")
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <div>
+      <Nav/>
+      <Layout>
+        <Row className="mt-5">
+          <Col>
+            <CardOne variantText="light" variant="dark" header="h5" titleText="Search for Employees">
+              <SearchBar state={{search, setSearch}} placeholder="Text Here"></SearchBar>
+            </CardOne>
+          </Col>
+        </Row>
+        <Row className="mt-5 mb-5">
+          <Col>
+            <CardOne variantText="light" variant="dark" header="h5" titleText="Employees">
+              <EmployeeTable state={{search, setSearch}} variant="secondary"></EmployeeTable>
+            </CardOne>
+          </Col>
+        </Row>
+      </Layout>
+    </div>  
   );
 }
 
