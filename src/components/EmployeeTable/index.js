@@ -22,7 +22,7 @@ function EmployeeTable(props) {
 
   useEffect(() => {
     console.log("search change")
-    setDisplayedEmployess(filterEmployeesBasedOnSearch(props));
+    setDisplayedEmployess(filterEmployeesBasedOnSearch());
     // console.log(displayedEmployees);
     // console.log(filterEmployeesBasedOnSearch(props))
   },[props.state.search]);
@@ -30,13 +30,13 @@ function EmployeeTable(props) {
 
   // Search Bar Functionality
 
-  const filterEmployeesBasedOnSearch = (props) => {
+  const filterEmployeesBasedOnSearch = () => {
     let currentSearchArray = props.state.search.toLocaleLowerCase().split("");
     if(!currentSearchArray[0]){
       console.log("nothing in search")
       return displayedEmployeesShadow
     }
-    const newArrayOfEmployeesBasedOnSearch = displayedEmployees.filter(val => {
+    const newArrayOfEmployeesBasedOnSearch = displayedEmployeesShadow.filter(val => {
       const fullnameForSearchArray = (val.name.first.toLocaleLowerCase() + " " + val.name.last.toLocaleLowerCase()).split("");
       const comparisonArray = [];
       for(let i = 0; i<currentSearchArray.length; i++){
