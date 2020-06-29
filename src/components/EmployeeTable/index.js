@@ -2,44 +2,39 @@ import React, { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
 import axios from "axios";
 
-function EmployeeTable(props){
-  let employeeStorage = [];
-  const [displayedEmployees, setDisplayedEmployess] = useState([{
-    "name": {
-    "title": "Mrs",
-    "first": "Beatrice",
-    "last": "Coleman"
-    },
-    "email": "beatrice.coleman@example.com",
-    "dob": {
-    "date": "1958-11-19T07:20:18.851Z",
-    "age": 62
-    },
-    "phone": "(025)-901-5259",
-    "picture": {
-    "thumbnail": "https://randomuser.me/api/portraits/thumb/women/54.jpg"
-    }
-  }]);
+function EmployeeTable(props) {
+  // let employeeStorage = [];
+  const [displayedEmployees, setDisplayedEmployess] = useState("");
+  const [displayedEmployeesShadow, setDisplayedEmployessShadow] = useState("");
 
+
+  // gets data on initial page load
   useEffect(() => {
-    axios.get("https://randomuser.me/api/?results=200&nat=us").then(data => {
-      employeeStorage = data.data.results;
-      setDisplayedEmployess(employeeStorage);
+    axios.get("https://randomuser.me/api/?results=50&nat=us").then(data => {
+      // employeeStorage = data.data.results;
+      setDisplayedEmployess(data.data.results);
+      setDisplayedEmployessShadow(data.data.results);
     });
-  },[]);
+  }, []);
+
+
+  // changes displayedEmployees state when search state changes
 
   useEffect(() => {
     console.log("search change")
-    // setDisplayedEmployess(filterEmployeesBasedOnSearch(props));
+    setDisplayedEmployess(filterEmployeesBasedOnSearch(props));
     // console.log(displayedEmployees);
-    console.log(filterEmployeesBasedOnSearch(props))
+    // console.log(filterEmployeesBasedOnSearch(props))
   },[props.state.search]);
+
+
+  // Search Bar Functionality
 
   const filterEmployeesBasedOnSearch = (props) => {
     let currentSearchArray = props.state.search.toLocaleLowerCase().split("");
     if(!currentSearchArray[0]){
       console.log("nothing in search")
-      return displayedEmployees
+      return displayedEmployeesShadow
     }
     const newArrayOfEmployeesBasedOnSearch = displayedEmployees.filter(val => {
       const fullnameForSearchArray = (val.name.first.toLocaleLowerCase() + " " + val.name.last.toLocaleLowerCase()).split("");
@@ -52,106 +47,167 @@ function EmployeeTable(props){
     return newArrayOfEmployeesBasedOnSearch;
   };
 
-  const compareNamesA = (a,b) => {
+
+  // Sort By Name
+
+  const compareNamesA = (a, b) => {
     let comparison = 0;
-    if (a.name.first > b.name.first){
+    if (a.name.first > b.name.first) {
       comparison = 1;
-    }else if(a.name.first < b.name.first){
+    } else if (a.name.first < b.name.first) {
       comparison = -1;
     }
     return comparison;
   }
 
-  const compareNamesZ = (a,b) => {
+  const compareNamesZ = (a, b) => {
     let comparison = 0;
-    if (a.name.first > b.name.first){
+    if (a.name.first > b.name.first) {
       comparison = -1;
-    }else if(a.name.first < b.name.first){
+    } else if (a.name.first < b.name.first) {
       comparison = 1;
     }
     return comparison;
   }
 
-  let sortByNameCounter = 0;
-  const sortByName = () =>{
-    sortByNameCounter ++;
-    if(sortByNameCounter % 2 === 0){
-      setDisplayedEmployess(() => {
-        return displayedEmployees.sort(compareNamesZ)
-      });
-    }else{
+  const [sortByNameCounter, setByNameCounter] = useState(1)
+  const sortByName = () => {
+    setByNameCounter(curr=> curr + 1)
+    if (sortByNameCounter % 2 === 0) {
+      setDisplayedEmployess(displayedEmployees.sort(compareNamesZ));
+    } else {
       setDisplayedEmployess(displayedEmployees.sort(compareNamesA));
     }
-    console.log(displayedEmployees);
-    console.log(sortByNameCounter);
   };
 
-  const compateEmail = (a,b) => {
+
+  // Sort by EMAIL
+
+  const compareEmailA = (a, b) => {
     let comparison = 0;
-    if (a.email > b.email){
+    if (a.email > b.email) {
       comparison = 1;
-    }else if(a.email < b.email){
+    } else if (a.email < b.email) {
       comparison = -1;
     }
     return comparison;
   }
 
-  const sortByEmail = () =>{
-    setDisplayedEmployess(displayedEmployees.sort(compateEmail))
-    console.log(displayedEmployees);
-  };  
-
-  const comparePhone = (a,b) => {
+  const compareEmailZ = (a, b) => {
     let comparison = 0;
-    if (a.phone > b.phone){
+    if (a.email > b.email) {
+      comparison = -1;
+    } else if (a.email < b.email) {
       comparison = 1;
-    }else if(a.phone < b.phone){
+    }
+    return comparison;
+  }
+
+  const [sortByEmailCounter, setSortByEmailCounter] = useState(1)
+  const sortByEmail = () => {
+    setSortByEmailCounter(curr => curr + 1);
+    if(sortByEmailCounter % 2 === 0){
+      setDisplayedEmployess(displayedEmployees.sort(compareEmailZ))
+    }else{
+      setDisplayedEmployess(displayedEmployees.sort(compareEmailA))
+    }
+  };
+
+
+  // Sort By Phone # 
+
+  const comparePhoneA = (a, b) => {
+    let comparison = 0;
+    if (a.phone > b.phone) {
+      comparison = 1;
+    } else if (a.phone < b.phone) {
       comparison = -1;
     }
     return comparison;
   }
 
-  const sortByPhone = () =>{
-    setDisplayedEmployess(displayedEmployees.sort(comparePhone))
-    console.log(displayedEmployees);
+  const comparePhoneZ = (a, b) => {
+    let comparison = 0;
+    if (a.phone > b.phone) {
+      comparison = -1;
+    } else if (a.phone < b.phone) {
+      comparison = 1;
+    }
+    return comparison;
+  }
+
+  const [sortByPhoneCounter, setSortByPhoneCounter] = useState(1);
+  const sortByPhone = () => {
+    setSortByPhoneCounter(curr => curr + 1);
+    if(sortByPhoneCounter % 2 === 0){
+      setDisplayedEmployess(displayedEmployees.sort(comparePhoneZ))
+    }else{
+      setDisplayedEmployess(displayedEmployees.sort(comparePhoneA))
+    }
   };
 
-  const compareDOB = (a,b) => {
+
+  // Sort by Date of Birth
+
+  const compareDOBA = (a, b) => {
     let comparison = 0;
-    if (a.dob.date > b.dob.date){
+    if (a.dob.date > b.dob.date) {
       comparison = 1;
-    }else if(a.dob.date < b.dob.date){
+    } else if (a.dob.date < b.dob.date) {
       comparison = -1;
     }
     return comparison;
   }
 
-  const sortByDOB = () =>{
-    setDisplayedEmployess(displayedEmployees.sort(compareDOB))
-    console.log(displayedEmployees);
+  const compareDOBZ = (a, b) => {
+    let comparison = 0;
+    if (a.dob.date > b.dob.date) {
+      comparison = -1;
+    } else if (a.dob.date < b.dob.date) {
+      comparison = 1;
+    }
+    return comparison;
+  }
+
+  const [sortByDOBCounter, setSortByDOBCounter] = useState(1);
+  const sortByDOB = () => {
+    setSortByDOBCounter(curr => curr + 1);
+    if(sortByDOBCounter % 2 === 0){
+      setDisplayedEmployess(displayedEmployees.sort(compareDOBZ))
+    }else{
+      setDisplayedEmployess(displayedEmployees.sort(compareDOBA))
+    }
   };
 
-  return(
+
+  // RETURN
+
+  return (
     <div>
-      <div>{JSON.stringify(displayedEmployees[0])}</div>
+      {/* <div>displayedEmployees[0].name.first: {displayedEmployees[0].name.first}</div> */}
       <Table striped bordered hover variant={props.variant}>
         <thead>
-          <th>Image</th>
-          <th onClick={sortByName}>Name</th>
-          <th onClick={sortByPhone}>Phone</th>
-          <th onClick={sortByEmail}>Email</th>
-          <th onClick={sortByDOB}>DOB</th>
+          <tr>
+            <th>Image</th>
+            <th onClick={sortByName}>Name</th>
+            <th onClick={sortByPhone}>Phone</th>
+            <th onClick={sortByEmail}>Email</th>
+            <th onClick={sortByDOB}>DOB</th>
+          </tr>
         </thead>
         <tbody>
-          {displayedEmployees ? displayedEmployees.map((data) => (
-            <tr>
-              <td className="d-flex justify-content-center"><img alt="Employee Headshot" src={data.picture.thumbnail}></img></td>
-              <td>{data.name.first} {data.name.last}</td>
-              <td>{data.phone}</td>
-              <td>{data.email}</td>
-              <td>{data.dob.date}</td>
-            </tr>
-          )): (<tr>
+          {displayedEmployees ? displayedEmployees.map((data) => {
+            // console.log(data)
+            return (
+              <tr key={data.login.uuid}>
+                <td className="d-flex justify-content-center"><img alt="Employee Headshot" src={data.picture.thumbnail}></img></td>
+                <td>{data.name.first} {data.name.last}</td>
+                <td>{data.phone}</td>
+                <td>{data.email}</td>
+                <td>{data.dob.date}</td>
+              </tr>
+            )
+          }) : (<tr>
             <td></td>
             <td></td>
             <td></td>
